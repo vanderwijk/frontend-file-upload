@@ -100,10 +100,10 @@ function frontend_file_upload( $atts ) {
 
 	<script>
 	jQuery(document).ready( function($) {
-		$( 'input[name="file_upload"]' ).on( 'change', function() {
-			$( 'form[name="file_upload_form"]' ).submit();
-			$( 'label[for="file-upload"] .spinner' ).show();
-		});
+		//$( 'input[name="file_upload"]' ).on( 'change', function() {
+		//	$( 'form[name="file_upload_form"]' ).submit();
+		//	$( 'label[for="file-upload"] .spinner' ).show();
+		//});
 		$( '#message' ).delay(5000).fadeOut( 'slow' );
 	});
 	</script>
@@ -145,18 +145,22 @@ function frontend_file_upload( $atts ) {
 				} ?>
 				<img src="/wp-content/plugins/frontend-file-upload/img/spinner.gif" class="spinner" width="15" height="15" style="display:none;" />
 			</label>
-			<input type="file" name="file_upload" id="file-upload" />
+			<input type="file" name="file_upload" id="file-upload" /><br />
+			<input type="submit" name="submit" id="submit" value="<?php _e( 'Upload', 'ffu' ); ?>" class="button-medium" />
 		</p>
 		<input type="hidden" name="post_id" value="<?php echo get_the_ID(); ?>" />
 		<?php wp_nonce_field( 'file_upload', 'file_upload_nonce' ); ?>
 	</form>
 
-	<?php if ( get_user_meta ( get_current_user_id(), esc_attr ( $a['type'] ) ) ) { ?>
-		<form name="file_delete_form" id="file-delete-form" class="file-delete-form" method="post" action="">
-			<input type="submit" name="post_id" value="<?php _e( 'Delete file', 'ffu' ); ?>" />
-			<?php wp_nonce_field( 'file_delete', 'file_delete_nonce' ); ?>
-		</form>
-	<?php }
+	<?php 
+	if ( esc_attr($a['delete']) === 'true' ) {
+		if ( get_user_meta ( get_current_user_id(), esc_attr ( $a['type'] ) ) ) { ?>
+			<form name="file_delete_form" id="file-delete-form" class="file-delete-form" method="post" action="">
+				<input type="submit" name="post_id" value="<?php _e( 'Delete file', 'ffu' ); ?>" />
+				<?php wp_nonce_field( 'file_delete', 'file_delete_nonce' ); ?>
+			</form>
+		<?php }
+	}
 }
 
 function frontend_file_upload_shortcode() {
