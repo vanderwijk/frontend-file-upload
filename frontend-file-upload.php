@@ -7,6 +7,10 @@
 * Author URI: https://thewebworks.nl
 */
 
+function ffu_load_textdomain() {
+  load_plugin_textdomain( 'ffu', false, basename( dirname( __FILE__ ) ) . '/languages' ); 
+}
+add_action( 'plugins_loaded', 'ffu_load_textdomain' );
 
 function frontend_file_upload( $atts ) {
 
