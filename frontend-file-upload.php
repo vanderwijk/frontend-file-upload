@@ -14,7 +14,8 @@ function frontend_file_upload( $atts ) {
 		'type' => 'logo',
 		'thumbnail' => false,
 		'custom_filename' => false,
-		'filetype' => ''
+		'filetype' => '',
+		'delete' => true 
     ), $atts );
 
 	// Check that the nonce is valid, and the user can edit this post. Then upload the file.
@@ -50,7 +51,15 @@ function frontend_file_upload( $atts ) {
 		require_once( ABSPATH . 'wp-admin/includes/media.php' );
 
 		// Let WordPress handle the upload.
-		$allowed_file_types = array( 'jpg' =>'image/jpg','jpeg' =>'image/jpeg', 'gif' => 'image/gif', 'png' => 'image/png' );
+		$allowed_file_types = array( 
+			'jpg' =>'image/jpg',
+			'jpeg' =>'image/jpeg',
+			'gif' => 'image/gif',
+			'png' => 'image/png',
+			'psd' => 'image/psd',
+			'svg' => 'image/svg+xml',
+			'ai' => 'application/illustrator'
+		);
 		$overrides = array( 'test_form' => false, 'mimes' => $allowed_file_types );
 		// 'file_upload' is the name of the file input in the form below.
 		$attachment_id = media_handle_upload( 'file_upload', $_POST['post_id'], array( 'post_title' => $current_user->display_name, 'post_content' => $current_user->ID ), $overrides );
@@ -93,7 +102,7 @@ function frontend_file_upload( $atts ) {
 	jQuery(document).ready( function($) {
 		$( 'input[name="file_upload"]' ).on( 'change', function() {
 			$( 'form[name="file_upload_form"]' ).submit();
-			$( 'label[for="file-upload"]' ).addClass( 'uploading' );
+			$( 'label[for="file-upload"] .spinner' ).show();
 		});
 		$( '#message' ).delay(5000).fadeOut( 'slow' );
 	});
@@ -111,17 +120,22 @@ function frontend_file_upload( $atts ) {
 	} else {
 		if ( get_user_meta( get_current_user_id(), esc_attr($a['type']) ) ) {
 			$the_attachment_id = get_user_meta( get_current_user_id(), esc_attr($a['type']) );
+			$file_metadata = ( wp_get_attachment_metadata( $the_attachment_id[0] ) );
+
 			echo '<a href="' . wp_get_attachment_url( $the_attachment_id[0] ) . '" download>';
 			echo basename( wp_get_attachment_url( $the_attachment_id[0] ) );
 			echo '</a>';
 			$file_size = size_format( filesize( get_attached_file( $the_attachment_id[0] ) ) );
 			echo ' - ' . $file_size;
+			if ( $file_metadata ) {
+				echo ' - ' . $file_metadata['width'] . ' x ' . $file_metadata['height'] . ' PX';
+			}
 		}
 	}
 	
 	?></p>
 
-	<form name="file_upload_form" id="file-upload-form" class="file-upload-form" method="post" action="" enctype="multipart/form-data">
+	<form name="file_upload_form" id="file-upload-form" class="file-upload-form <?php echo esc_attr($a['type']); ?>" method="post" action="" enctype="multipart/form-data">
 		<p>
 			<label for="file-upload">
 				<?php if ( get_user_meta( get_current_user_id(), esc_attr($a['type']) ) ) {
@@ -129,6 +143,7 @@ function frontend_file_upload( $atts ) {
 				} else {
 					_e( 'Upload file', 'ffu' );
 				} ?>
+				<img src="/wp-content/plugins/frontend-file-upload/img/spinner.gif" class="spinner" width="15" height="15" style="display:none;" />
 			</label>
 			<input type="file" name="file_upload" id="file-upload" />
 		</p>
@@ -136,7 +151,7 @@ function frontend_file_upload( $atts ) {
 		<?php wp_nonce_field( 'file_upload', 'file_upload_nonce' ); ?>
 	</form>
 
-	<?php if ( get_user_meta( get_current_user_id(), esc_attr($a['type']) ) ) { ?>
+	<?php if ( get_user_meta ( get_current_user_id(), esc_attr ( $a['type'] ) ) ) { ?>
 		<form name="file_delete_form" id="file-delete-form" class="file-delete-form" method="post" action="">
 			<input type="submit" name="post_id" value="<?php _e( 'Delete file', 'ffu' ); ?>" />
 			<?php wp_nonce_field( 'file_delete', 'file_delete_nonce' ); ?>
