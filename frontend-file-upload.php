@@ -71,12 +71,12 @@ function frontend_file_upload( $atts ) {
 		// Remove custom filename filter
 		remove_filter( 'wp_handle_upload_prefilter', 'custom_upload_filter' );
 
-		ob_start();
+		$content = '';
 
 		if ( is_wp_error( $attachment_id ) ) {
 			// There was an error uploading the image.
 			$error_string = $attachment_id -> get_error_message();
-			echo '<div id="message" class="notice notice-error"><p>' . $error_string . '</p></div>';
+			$content .= '<div id="message" class="notice notice-error"><p>' . $error_string . '</p></div>';
 			$upload_status = 'error';
 			$button_upload_class = "button primary";
 		} else {
@@ -89,7 +89,7 @@ function frontend_file_upload( $atts ) {
 			}
 
 			update_user_meta( get_current_user_id(), esc_attr($a['type']), $attachment_id );
-			echo '<div id="message" class="notice notice-success"><p>' . __( 'Your file has been updated', 'ffu' ) . '</p></div>';
+			$content .= '<div id="message" class="notice notice-success"><p>' . __( 'Your file has been updated', 'ffu' ) . '</p></div>';
 			$upload_status = 'success';
 			$button_upload_class = "button secondary";
 		}
@@ -99,27 +99,26 @@ function frontend_file_upload( $atts ) {
 		$the_attachment_id = get_user_meta( get_current_user_id(), esc_attr($a['type']) );
 		wp_delete_attachment( $the_attachment_id[0] );
 		delete_user_meta( get_current_user_id(), esc_attr($a['type']) );
-		echo '<div id="message" class="notice notice-success"><p>' . __( 'Your file has been removed', 'ffu' ) . '</p></div>';
+		$content .= '<div id="message" class="notice notice-success"><p>' . __( 'Your file has been removed', 'ffu' ) . '</p></div>';
 	} else {
 		// The security check failed, maybe show the user an error.
-	} ?>
+	}
 
-	<script>
+	$content .= '<script>
 	jQuery(document).ready( function($) {
-		$('form[name="file_upload_form"]').submit(function() {
-			$( 'input[type="submit"]').addClass( 'uploading' );
+		$( "form[name=file_upload_form]" ).submit(function() {
+			$( "input[type=submit]" ).addClass( "uploading" );
 		});
-		$( '#message' ).delay(5000).fadeOut( 'slow' );
+		$( "#message" ).delay(5000).fadeOut( "slow" );
 	});
 	</script>
-
-	<p><?php 
+	<p>';
 
 	if ( esc_attr($a['thumbnail']) === 'true' ) {
 		
 		if ( get_user_meta( get_current_user_id(), esc_attr($a['type']) ) ) {
 			$the_attachment_id = get_user_meta( get_current_user_id(), esc_attr($a['type']) );
-			echo wp_get_attachment_image( $the_attachment_id[0], 'full', true );
+			$content .= wp_get_attachment_image( $the_attachment_id[0], 'full', true );
 		}
 
 	} else {
@@ -127,37 +126,34 @@ function frontend_file_upload( $atts ) {
 			$the_attachment_id = get_user_meta( get_current_user_id(), esc_attr($a['type']) );
 			$file_metadata = ( wp_get_attachment_metadata( $the_attachment_id[0] ) );
 
-			echo '<a href="' . wp_get_attachment_url( $the_attachment_id[0] ) . '" download>';
-			echo basename( wp_get_attachment_url( $the_attachment_id[0] ) );
-			echo '</a>';
+			$content .= '<a href="' . wp_get_attachment_url( $the_attachment_id[0] ) . '" download>';
+			$content .= basename( wp_get_attachment_url( $the_attachment_id[0] ) );
+			$content .= '</a>';
 			$file_size = size_format( filesize( get_attached_file( $the_attachment_id[0] ) ) );
-			echo ' - ' . $file_size;
+			$content .=  ' - ' . $file_size;
 			if ( $file_metadata ) {
-				echo ' - ' . $file_metadata['width'] . ' x ' . $file_metadata['height'] . ' PX';
+				$content .= ' - ' . $file_metadata['width'] . ' x ' . $file_metadata['height'] . ' PX';
 			}
 		}
 	}
-	
-	?></p>
 
-	<form name="file_upload_form" id="file-upload-form" class="file-upload-form <?php echo esc_attr($a['type']); ?>" method="post" action="" enctype="multipart/form-data">
+	$content .= '</p>';
+
+	$content .= '<form name="file_upload_form" id="file-upload-form" class="file-upload-form ' . esc_attr($a['type']) . '" method="post" action="" enctype="multipart/form-data">
 		<p>
-			<label for="file-upload">
-				<?php if ( get_user_meta( get_current_user_id(), esc_attr($a['type']) ) ) {
-					_e( 'Change file', 'ffu' );
+			<label for="file-upload">';
+				if ( get_user_meta( get_current_user_id(), esc_attr($a["type"]) ) ) {
+					$content .= __( 'Change file', 'ffu' );
 				} else {
-					_e( 'Upload file', 'ffu' );
-				} ?>
-				<img src="/wp-content/plugins/frontend-file-upload/img/spinner.gif" class="spinner" width="15" height="15" style="display:none;" />
-			</label>
+					$content .= __( 'Upload file', 'ffu' );
+				}
+			$content .= '</label>
 			<input type="file" name="file_upload" id="file-upload" /><br />
 		</p>
-		<input type="submit" name="submit" id="submit" value="<?php _e( 'Upload', 'ffu' ); ?>" class="button-medium" />
-		<input type="hidden" name="post_id" value="<?php echo get_the_ID(); ?>" />
-		<?php wp_nonce_field( 'file_upload', 'file_upload_nonce' ); ?>
-	</form>
-
-	<?php 
+		<input type="submit" name="submit" id="submit" value="' . __( 'Upload', 'ffu' ) . '" class="button-medium" />
+		<input type="hidden" name="post_id" value="<?php echo get_the_ID(); ?>" />' .
+		wp_nonce_field( 'file_upload', 'file_upload_nonce' ) .
+	'</form>';
 
 	if ( esc_attr($a['delete']) === 'true' ) {
 		if ( get_user_meta ( get_current_user_id(), esc_attr ( $a['type'] ) ) ) { ?>
@@ -168,7 +164,7 @@ function frontend_file_upload( $atts ) {
 		<?php }
 	}
 
-	return ob_get_clean();
+	return $content;
 
 }
 
