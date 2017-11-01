@@ -71,8 +71,6 @@ function frontend_file_upload( $atts ) {
 		// Remove custom filename filter
 		remove_filter( 'wp_handle_upload_prefilter', 'custom_upload_filter' );
 
-		ob_start();
-
 		if ( is_wp_error( $attachment_id ) ) {
 			// There was an error uploading the image.
 			$error_string = $attachment_id -> get_error_message();
@@ -166,7 +164,6 @@ function frontend_file_upload( $atts ) {
 			</form>
 		<?php }
 	}
-	$ReturnString = ob_get_contents(); ob_end_clean(); return $ReturnString;
 }
 
 function frontend_file_upload_shortcode() {
