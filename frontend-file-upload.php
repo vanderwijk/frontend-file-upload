@@ -71,6 +71,8 @@ function frontend_file_upload( $atts ) {
 		// Remove custom filename filter
 		remove_filter( 'wp_handle_upload_prefilter', 'custom_upload_filter' );
 
+		ob_start();
+
 		if ( is_wp_error( $attachment_id ) ) {
 			// There was an error uploading the image.
 			$error_string = $attachment_id -> get_error_message();
@@ -156,6 +158,7 @@ function frontend_file_upload( $atts ) {
 	</form>
 
 	<?php 
+
 	if ( esc_attr($a['delete']) === 'true' ) {
 		if ( get_user_meta ( get_current_user_id(), esc_attr ( $a['type'] ) ) ) { ?>
 			<form name="file_delete_form" id="file-delete-form" class="file-delete-form" method="post" action="">
@@ -164,6 +167,9 @@ function frontend_file_upload( $atts ) {
 			</form>
 		<?php }
 	}
+
+	return ob_get_clean();
+
 }
 
 function frontend_file_upload_shortcode() {
