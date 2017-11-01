@@ -71,6 +71,8 @@ function frontend_file_upload( $atts ) {
 		// Remove custom filename filter
 		remove_filter( 'wp_handle_upload_prefilter', 'custom_upload_filter' );
 
+		ob_start();
+
 		if ( is_wp_error( $attachment_id ) ) {
 			// There was an error uploading the image.
 			$error_string = $attachment_id -> get_error_message();
@@ -104,10 +106,9 @@ function frontend_file_upload( $atts ) {
 
 	<script>
 	jQuery(document).ready( function($) {
-		//$( 'input[name="file_upload"]' ).on( 'change', function() {
-		//	$( 'form[name="file_upload_form"]' ).submit();
-		//	$( 'label[for="file-upload"] .spinner' ).show();
-		//});
+		$('form[name="file_upload_form"]').submit(function() {
+			$( 'input[type="submit"]').addClass( 'uploading' );
+		});
 		$( '#message' ).delay(5000).fadeOut( 'slow' );
 	});
 	</script>
@@ -150,8 +151,8 @@ function frontend_file_upload( $atts ) {
 				<img src="/wp-content/plugins/frontend-file-upload/img/spinner.gif" class="spinner" width="15" height="15" style="display:none;" />
 			</label>
 			<input type="file" name="file_upload" id="file-upload" /><br />
-			<input type="submit" name="submit" id="submit" value="<?php _e( 'Upload', 'ffu' ); ?>" class="button-medium" />
 		</p>
+		<input type="submit" name="submit" id="submit" value="<?php _e( 'Upload', 'ffu' ); ?>" class="button-medium" />
 		<input type="hidden" name="post_id" value="<?php echo get_the_ID(); ?>" />
 		<?php wp_nonce_field( 'file_upload', 'file_upload_nonce' ); ?>
 	</form>
@@ -165,6 +166,7 @@ function frontend_file_upload( $atts ) {
 			</form>
 		<?php }
 	}
+	$ReturnString = ob_get_contents(); ob_end_clean(); return $ReturnString;
 }
 
 function frontend_file_upload_shortcode() {
