@@ -59,13 +59,14 @@ function frontend_file_upload( $atts ) {
 
 		// Let WordPress handle the upload.
 		$allowed_file_types = array( 
-			'jpg' =>'image/jpg',
-			'jpeg' =>'image/jpeg',
-			'gif' => 'image/gif',
-			'png' => 'image/png',
-			'psd' => 'image/psd',
-			'svg' => 'image/svg+xml',
-			'ai' => 'application/illustrator'
+			'jpg'  =>  'image/jpg',
+			'jpeg' =>  'image/jpeg',
+			'gif'  =>  'image/gif',
+			'png'  =>  'image/png',
+			'psd'  =>  'image/psd',
+			'svg'  =>  'image/svg+xml',
+			'ai'   =>  'application/illustrator',
+			'pdf'  =>  'application/pdf'
 		);
 		$overrides = array( 'test_form' => false, 'mimes' => $allowed_file_types );
 		// 'file_upload' is the name of the file input in the form below.
