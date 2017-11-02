@@ -19,8 +19,12 @@ function frontend_file_upload( $atts ) {
 		'thumbnail' => false,
 		'custom_filename' => false,
 		'filetype' => '',
-		'delete' => true 
-    ), $atts );
+		'delete' => false 
+	), $atts );
+	
+	$content = '';
+
+	$attachment_type = esc_attr($a['type']);
 
 	// Check that the nonce is valid, and the user can edit this post. Then upload the file.
 	if ( isset( $_POST['file_upload_nonce'], $_POST['post_id'] ) && wp_verify_nonce( $_POST['file_upload_nonce'], 'file_upload' ) && current_user_can( 'read' ) ) {
@@ -31,9 +35,8 @@ function frontend_file_upload( $atts ) {
 		function mm_custom_upload_filter( $file ) {
 			$file_info = new SplFileInfo($file['name']);
 			$extension = $file_info->getExtension();
-			$user_id = get_current_user_id();
 			// Rename uploaded file with random md5 hash to prevent guessing of filenames
-			$file['name'] = 'file-' . $user_id . '-' . md5(uniqid(rand(), true)) . '.' . $extension;
+			$file['name'] = 'file-' . get_current_user_id() . '-' . md5(uniqid(rand(), true)) . '.' . $extension;
 			return $file;
 		}
 		if ( esc_attr($a['custom_filename']) === 'true' ) {
@@ -71,35 +74,32 @@ function frontend_file_upload( $atts ) {
 		// Remove custom filename filter
 		remove_filter( 'wp_handle_upload_prefilter', 'custom_upload_filter' );
 
-		$content = '';
-
 		if ( is_wp_error( $attachment_id ) ) {
 			// There was an error uploading the image.
 			$error_string = $attachment_id -> get_error_message();
 			$content .= '<div id="message" class="notice notice-error"><p>' . $error_string . '</p></div>';
-			$upload_status = 'error';
-			$button_upload_class = "button primary";
+			do_action( 'ffu_upload_failure', $attachment_id, $error_string );
 		} else {
 			// The image was uploaded successfully!
 
 			// If image is replaced, remove old file
-			if ( get_user_meta( get_current_user_id(), esc_attr($a['type']) ) ) {
-				$the_attachment_id = get_user_meta( get_current_user_id(), esc_attr($a['type']) );
+			if ( get_user_meta( get_current_user_id(), $attachment_type ) ) {
+				$the_attachment_id = get_user_meta( get_current_user_id(), $attachment_type );
 				wp_delete_attachment( $the_attachment_id[0] );
 			}
 
-			update_user_meta( get_current_user_id(), esc_attr($a['type']), $attachment_id );
+			update_user_meta( get_current_user_id(), $attachment_type, $attachment_id );
 			$content .= '<div id="message" class="notice notice-success"><p>' . __( 'Your file has been updated', 'ffu' ) . '</p></div>';
-			$upload_status = 'success';
-			$button_upload_class = "button secondary";
+			do_action( 'ffu_upload_success', $attachment_id, $attachment_type );
 		}
 
 	// Check that the nonce is valid, and the user can edit this post. Then delete the file.
 	} else if ( isset( $_POST['file_delete_nonce'], $_POST['post_id'] ) && wp_verify_nonce( $_POST['file_delete_nonce'], 'file_delete' ) && current_user_can( 'read'  ) ) {
-		$the_attachment_id = get_user_meta( get_current_user_id(), esc_attr($a['type']) );
+		$the_attachment_id = get_user_meta( get_current_user_id(), $attachment_type );
 		wp_delete_attachment( $the_attachment_id[0] );
-		delete_user_meta( get_current_user_id(), esc_attr($a['type']) );
+		delete_user_meta( get_current_user_id(), $attachment_type );
 		$content .= '<div id="message" class="notice notice-success"><p>' . __( 'Your file has been removed', 'ffu' ) . '</p></div>';
+		do_action( 'ffu_upload_deleted', $attachment_id, $attachment_type );
 	} else {
 		// The security check failed, maybe show the user an error.
 	}
@@ -116,14 +116,14 @@ function frontend_file_upload( $atts ) {
 
 	if ( esc_attr($a['thumbnail']) === 'true' ) {
 		
-		if ( get_user_meta( get_current_user_id(), esc_attr($a['type']) ) ) {
-			$the_attachment_id = get_user_meta( get_current_user_id(), esc_attr($a['type']) );
+		if ( get_user_meta( get_current_user_id(), $attachment_type ) ) {
+			$the_attachment_id = get_user_meta( get_current_user_id(), $attachment_type );
 			$content .= wp_get_attachment_image( $the_attachment_id[0], 'full', true );
 		}
 
 	} else {
-		if ( get_user_meta( get_current_user_id(), esc_attr($a['type']) ) ) {
-			$the_attachment_id = get_user_meta( get_current_user_id(), esc_attr($a['type']) );
+		if ( get_user_meta( get_current_user_id(), $attachment_type ) ) {
+			$the_attachment_id = get_user_meta( get_current_user_id(), $attachment_type );
 			$file_metadata = ( wp_get_attachment_metadata( $the_attachment_id[0] ) );
 
 			$content .= '<a href="' . wp_get_attachment_url( $the_attachment_id[0] ) . '" download>';
@@ -139,7 +139,7 @@ function frontend_file_upload( $atts ) {
 
 	$content .= '</p>';
 
-	$content .= '<form name="file_upload_form" id="file-upload-form" class="file-upload-form ' . esc_attr($a['type']) . '" method="post" action="" enctype="multipart/form-data">
+	$content .= '<form name="file_upload_form" id="file-upload-form" class="file-upload-form ' . $attachment_type . '" method="post" action="" enctype="multipart/form-data">
 		<p>
 			<label for="file-upload">';
 				if ( get_user_meta( get_current_user_id(), esc_attr($a["type"]) ) ) {
