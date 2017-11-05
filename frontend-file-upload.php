@@ -140,8 +140,11 @@ function frontend_file_upload( $atts ) {
 
 	$content .= '</p>';
 
-	$content .= '<form name="file_upload_form" id="file-upload-form" class="file-upload-form ' . $attachment_type . '" method="post" action="" enctype="multipart/form-data">
-		<p>
+	$content .= '<form name="file_upload_form" id="file-upload-form" class="file-upload-form ' . $attachment_type . '" method="post" action="" enctype="multipart/form-data">';
+
+	do_action( 'ffu_form_start', $attachment_type );
+
+	$content .= '<p>
 			<label for="file-upload">';
 				if ( get_user_meta( get_current_user_id(), esc_attr($a["type"]) ) ) {
 					$content .= __( 'Change file', 'ffu' );
@@ -153,8 +156,11 @@ function frontend_file_upload( $atts ) {
 		</p>
 		<input type="submit" name="submit" id="submit" value="' . __( 'Upload', 'ffu' ) . '" class="button-medium" />
 		<input type="hidden" name="post_id" value="<?php echo get_the_ID(); ?>" />' .
-		wp_nonce_field( 'file_upload', 'file_upload_nonce' ) .
-	'</form>';
+		wp_nonce_field( 'file_upload', 'file_upload_nonce' );
+
+		do_action( 'ffu_form_end', $attachment_type );
+
+		$content .= '</form>';
 
 	if ( esc_attr($a['delete']) === 'true' ) {
 		if ( get_user_meta ( get_current_user_id(), esc_attr ( $a['type'] ) ) ) { ?>
