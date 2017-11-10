@@ -133,7 +133,9 @@ function frontend_file_upload( $atts ) {
 			$file_size = size_format( filesize( get_attached_file( $the_attachment_id[0] ) ) );
 			$content .=  ' - ' . $file_size;
 			if ( $file_metadata ) {
-				$content .= ' - ' . $file_metadata['width'] . ' x ' . $file_metadata['height'] . ' PX';
+				if ( $file_metadata['width'] && $file_metadata['height'] ) {
+					$content .= ' - ' . $file_metadata['width'] . ' x ' . $file_metadata['height'] . ' PX';
+				}
 			}
 		}
 	}
