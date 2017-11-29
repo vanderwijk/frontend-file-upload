@@ -121,6 +121,8 @@ function frontend_file_upload( $atts ) {
 	</script>
 	<p>';
 
+	$content .= 'test';
+
 	if ( esc_attr($a['thumbnail']) === 'true' ) {
 		
 		if ( get_user_meta( get_current_user_id(), $attachment_type ) ) {
