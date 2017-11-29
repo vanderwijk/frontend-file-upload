@@ -121,7 +121,7 @@ function frontend_file_upload( $atts ) {
 	</script>
 	<p>';
 
-	$content .= 'test';
+	$content .= $allowed_file_types;
 
 	if ( esc_attr($a['thumbnail']) === 'true' ) {
 		
