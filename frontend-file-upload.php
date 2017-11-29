@@ -26,6 +26,8 @@ function frontend_file_upload( $atts ) {
 
 	$attachment_type = esc_attr($a['type']);
 
+	$attachment_filetype = esc_attr($a['filetype']);
+
 	// Check that the nonce is valid, and the user can edit this post. Then upload the file.
 	if ( isset( $_POST['file_upload_nonce'], $_POST['post_id'] ) && wp_verify_nonce( $_POST['file_upload_nonce'], 'file_upload' ) && current_user_can( 'read' ) ) {
 
@@ -58,16 +60,20 @@ function frontend_file_upload( $atts ) {
 		require_once( ABSPATH . 'wp-admin/includes/media.php' );
 
 		// Let WordPress handle the upload.
-		$allowed_file_types = array( 
-			'jpg'  =>  'image/jpg',
-			'jpeg' =>  'image/jpeg',
-			'gif'  =>  'image/gif',
-			'png'  =>  'image/png',
-			'psd'  =>  'image/psd',
-			'svg'  =>  'image/svg+xml',
-			'ai'   =>  'application/illustrator',
-			'pdf'  =>  'application/pdf'
-		);
+		if ( $attachment_filetype ) {
+			$allowed_file_types = $attachment_filetype;
+		} else {
+			$allowed_file_types = array( 
+				'jpg'  =>  'image/jpg',
+				'jpeg' =>  'image/jpeg',
+				'gif'  =>  'image/gif',
+				'png'  =>  'image/png',
+				'psd'  =>  'image/psd',
+				'svg'  =>  'image/svg+xml',
+				'ai'   =>  'application/illustrator',
+				'pdf'  =>  'application/pdf'
+			);
+		}
 		$overrides = array( 'test_form' => false, 'mimes' => $allowed_file_types );
 		// 'file_upload' is the name of the file input in the form below.
 		$attachment_id = media_handle_upload( 'file_upload', $_POST['post_id'], array( 'post_title' => $current_user->display_name, 'post_content' => $current_user->ID ), $overrides );
