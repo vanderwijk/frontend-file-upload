@@ -18,7 +18,7 @@ function frontend_file_upload( $atts ) {
 		'type' => 'logo',
 		'thumbnail' => false,
 		'custom_filename' => false,
-		'filetype' => '',
+		'filetype' => false,
 		'delete' => false 
 	), $atts );
 	
