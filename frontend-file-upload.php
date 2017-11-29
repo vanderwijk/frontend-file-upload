@@ -26,7 +26,7 @@ function frontend_file_upload( $atts ) {
 
 	$attachment_type = esc_attr($a['type']);
 
-	$attachment_filetype = esc_attr($a['filetype']);
+	$attachment_filetype = $a['filetype'];
 
 	// Check that the nonce is valid, and the user can edit this post. Then upload the file.
 	if ( isset( $_POST['file_upload_nonce'], $_POST['post_id'] ) && wp_verify_nonce( $_POST['file_upload_nonce'], 'file_upload' ) && current_user_can( 'read' ) ) {
