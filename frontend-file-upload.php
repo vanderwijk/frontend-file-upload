@@ -60,7 +60,9 @@ function frontend_file_upload( $atts ) {
 		require_once( ABSPATH . 'wp-admin/includes/media.php' );
 
 		// Let WordPress handle the upload.
-
+		if ( $attachment_filetype ) {
+			$allowed_file_types = array( $attachment_filetype );
+		} else {
 			$allowed_file_types = array( 
 				'jpg'  =>  'image/jpg',
 				'jpeg' =>  'image/jpeg',
@@ -71,7 +73,7 @@ function frontend_file_upload( $atts ) {
 				'ai'   =>  'application/illustrator',
 				'pdf'  =>  'application/pdf'
 			);
-
+		}
 		$overrides = array( 'test_form' => false, 'mimes' => $allowed_file_types );
 		// 'file_upload' is the name of the file input in the form below.
 		$attachment_id = media_handle_upload( 'file_upload', $_POST['post_id'], array( 'post_title' => $current_user->display_name, 'post_content' => $current_user->ID ), $overrides );
