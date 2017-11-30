@@ -45,8 +45,12 @@ function frontend_file_upload( $atts ) {
 				$allowed_file_types['svg'] = 'image/svg+xml';
 			} else if ( $allowed_file_type == 'ai' ) {
 				$allowed_file_types['ai'] = 'application/illustrator';
+			} else if ( $allowed_file_type == 'eps' ) {
+				$allowed_file_types['eps'] = 'application/postscript';
 			} else if ( $allowed_file_type == 'pdf' ) {
 				$allowed_file_types['pdf'] = 'application/pdf';
+			} else if ( $allowed_file_type == 'zip' ) {
+				$allowed_file_types['zip'] = 'application/zip';
 			}
 		}
 	} else {
