@@ -51,6 +51,8 @@ function frontend_file_upload( $atts ) {
 				$allowed_file_types['pdf'] = 'application/pdf';
 			} else if ( $allowed_file_type == 'zip' ) {
 				$allowed_file_types['zip'] = 'application/zip';
+			} else if ( $allowed_file_type == 'tif' ) {
+				$allowed_file_types['tif'] = 'image/tiff';
 			}
 		}
 	} else {
