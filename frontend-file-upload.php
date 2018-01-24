@@ -168,7 +168,6 @@ function frontend_file_upload( $atts ) {
 					$content .=  ' - ' . $file_size;
 				}
 				if ( $file_metadata ) {
-					print_r ($file_metadata );
 					if ( $file_metadata['width'] && $file_metadata['height'] ) {
 						$content .= ' - ' . $file_metadata['width'] . ' x ' . $file_metadata['height'] . ' PX';
 					}
