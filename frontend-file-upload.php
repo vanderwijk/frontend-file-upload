@@ -184,10 +184,13 @@ function frontend_file_upload( $atts ) {
 
 	$content .= '<p>
 			<label for="file-upload">';
-				if ( get_user_meta( get_current_user_id(), esc_attr($a["type"]) ) ) {
-					$content .= __( 'Change file', 'ffu' );
-				} else {
-					$content .= __( 'Upload file', 'ffu' );
+				if ( get_user_meta( get_current_user_id(), $attachment_type ) ) {
+					$the_attachment_id = get_user_meta( get_current_user_id(), $attachment_type );
+					if ( !empty( $the_attachment_id[0] ) ) {
+						$content .= __( 'Change file', 'ffu' );
+					} else {
+						$content .= __( 'Upload file', 'ffu' );
+					}
 				}
 			$content .= '</label>
 			<input type="file" name="file_upload" id="file-upload" /><br />
