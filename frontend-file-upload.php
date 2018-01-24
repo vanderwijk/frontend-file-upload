@@ -195,7 +195,7 @@ function frontend_file_upload( $atts ) {
 			$content .= '</label>
 			<input type="file" name="file_upload" id="file-upload" /><br />
 		</p>
-		<input type="submit" name="submit" id="submit" value="' . __( 'Upload', 'ffu' ) . '" class="button-medium" />
+		<input type="submit" name="submit" id="submit" value="' . __( 'Save', 'ffu' ) . '" class="button-medium" />
 		<input type="hidden" name="post_id" value="' . get_the_ID() . '" />' . wp_nonce_field( 'file_upload', 'file_upload_nonce', false );
 
 		do_action( 'ffu_form_end', $attachment_type );

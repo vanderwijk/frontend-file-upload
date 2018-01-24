@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Frontend File Upload\n"
-"POT-Creation-Date: 2017-10-04 16:51+0200\n"
-"PO-Revision-Date: 2017-10-04 16:52+0200\n"
+"POT-Creation-Date: 2018-01-24 15:24+0100\n"
+"PO-Revision-Date: 2018-01-24 15:24+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.3\n"
+"X-Generator: Poedit 2.0.6\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-Flags-xgettext: --add-comments=translators:\n"
@@ -21,27 +21,27 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.js\n"
 
-#: frontend-file-upload.php:90
+#: frontend-file-upload.php:125
 msgid "Your file has been updated"
 msgstr "Uw bestand is bijgewerkt"
 
-#: frontend-file-upload.php:100
+#: frontend-file-upload.php:134
 msgid "Your file has been removed"
 msgstr "Uw bestand is verwijderd"
 
-#: frontend-file-upload.php:146
+#: frontend-file-upload.php:190
 msgid "Change file"
 msgstr "Bestand wijzigen"
 
-#: frontend-file-upload.php:148
+#: frontend-file-upload.php:192
 msgid "Upload file"
 msgstr "Bestand uploaden"
 
-#: frontend-file-upload.php:153
-msgid "Upload"
-msgstr "Uploaden"
+#: frontend-file-upload.php:198
+msgid "Save"
+msgstr "Opslaan"
 
-#: frontend-file-upload.php:163
+#: frontend-file-upload.php:208
 msgid "Delete file"
 msgstr "Bestand verwijderen"
 
@@ -60,3 +60,6 @@ msgstr "Johan van der Wijk"
 #. Author URI of the plugin/theme
 msgid "https://thewebworks.nl"
 msgstr "http://thewebworks.nl"
+
+#~ msgid "Upload"
+#~ msgstr "Uploaden"
