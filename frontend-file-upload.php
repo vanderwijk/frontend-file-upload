@@ -157,16 +157,21 @@ function frontend_file_upload( $atts ) {
 	} else {
 		if ( get_user_meta( get_current_user_id(), $attachment_type ) ) {
 			$the_attachment_id = get_user_meta( get_current_user_id(), $attachment_type );
-			$file_metadata = ( wp_get_attachment_metadata( $the_attachment_id[0] ) );
+			if ( !empty( $the_attachment_id[0] ) ) {
+				$file_metadata = ( wp_get_attachment_metadata( $the_attachment_id[0] ) );
 
-			$content .= '<a href="' . wp_get_attachment_url( $the_attachment_id[0] ) . '" download>';
-			$content .= basename( wp_get_attachment_url( $the_attachment_id[0] ) );
-			$content .= '</a>';
-			$file_size = size_format( filesize( get_attached_file( $the_attachment_id[0] ) ) );
-			$content .=  ' - ' . $file_size;
-			if ( $file_metadata ) {
-				if ( $file_metadata['width'] && $file_metadata['height'] ) {
-					$content .= ' - ' . $file_metadata['width'] . ' x ' . $file_metadata['height'] . ' PX';
+				$content .= '<a href="' . wp_get_attachment_url( $the_attachment_id[0] ) . '" download>';
+				$content .= basename( wp_get_attachment_url( $the_attachment_id[0] ) );
+				$content .= '</a>';
+				$file_size = size_format( filesize( get_attached_file( $the_attachment_id[0] ) ) );
+				if ( $file_size ) {
+					$content .=  ' - ' . $file_size;
+				}
+				if ( $file_metadata ) {
+					print_r ($file_metadata );
+					if ( $file_metadata['width'] && $file_metadata['height'] ) {
+						$content .= ' - ' . $file_metadata['width'] . ' x ' . $file_metadata['height'] . ' PX';
+					}
 				}
 			}
 		}
