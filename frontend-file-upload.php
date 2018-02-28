@@ -34,9 +34,9 @@ function frontend_file_upload( $atts ) {
 			if ( $allowed_file_type == 'jpg' ) {
 				$allowed_file_types['jpg'] = 'image/jpg';
 			} else if ( $allowed_file_type == 'jpeg' ) {
-				$allowed_file_types['jpg'] = 'image/jpg';
+				$allowed_file_types['jpeg'] = 'image/jpeg';
 			} else if ( $allowed_file_type == 'gif' ) {
-				$allowed_file_types['jpg'] = 'image/gif';
+				$allowed_file_types['gif'] = 'image/gif';
 			} else if ( $allowed_file_type == 'png' ) {
 				$allowed_file_types['png'] = 'image/png';
 			} else if ( $allowed_file_type == 'psd' ) {
@@ -142,7 +142,7 @@ function frontend_file_upload( $atts ) {
 		$( "form[name=file_upload_form]" ).submit(function() {
 			$( "input[type=submit]" ).addClass( "uploading" );
 		});
-		$( "#message" ).delay(5000).fadeOut( "slow" );
+		$( "#message" ).delay(8000).fadeOut( "slow" );
 	});
 	</script>
 	<p>';
