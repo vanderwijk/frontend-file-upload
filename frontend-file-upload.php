@@ -32,9 +32,7 @@ function frontend_file_upload( $atts ) {
 		$allowed_file_types_array = explode(',', $attachment_filetype);
 		foreach ( $allowed_file_types_array as $allowed_file_type ) {
 			if ( $allowed_file_type == 'jpg' ) {
-				$allowed_file_types['jpg'] = 'image/jpg';
-			} else if ( $allowed_file_type == 'jpeg' ) {
-				$allowed_file_types['jpeg'] = 'image/jpeg';
+				$allowed_file_types['jpg|jpeg|jpe'] = 'image/jpeg';
 			} else if ( $allowed_file_type == 'gif' ) {
 				$allowed_file_types['gif'] = 'image/gif';
 			} else if ( $allowed_file_type == 'png' ) {
