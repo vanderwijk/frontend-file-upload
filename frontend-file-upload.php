@@ -2,7 +2,7 @@
 /*
 * Plugin Name: Frontend File Upload
 * Description: Shortcode to allow logged-in users to upload files
-* Version: 1.0
+* Version: 1.0.1
 * Author: Johan van der Wijk
 * Author URI: https://thewebworks.nl
 */
@@ -23,6 +23,59 @@ function frontend_file_upload( $atts ) {
 	), $atts );
 	
 	$content = '';
+
+	$content .= '
+	<style>
+		.loader {
+			display: none;
+		}
+		.loading .loader {
+			display: block;
+		}
+		.loader {
+			background-color: #fff;
+			opacity: .8;
+			width: 100%;
+			height: 100%;
+			position: fixed;
+			text-align: center;
+			top: 0;
+			left: 0;
+			z-index: 105;
+		}
+		.loader-spinner {
+			background-color: #e6d500;
+			width: 50px;
+			height: 50px;
+			position: relative;
+			top: 50%;
+			left: 50%;
+			margin: -25px 0 0 -25px;
+			-webkit-animation: rotateplane 1.2s infinite ease-in-out;
+ 			animation: rotateplane 1.2s infinite ease-in-out;
+		}
+		@-webkit-keyframes rotateplane {
+			0% { -webkit-transform: perspective(120px) }
+			50% { -webkit-transform: perspective(120px) rotateY(180deg) }
+			100% { -webkit-transform: perspective(120px) rotateY(180deg)  rotateX(180deg) }
+		}
+		@keyframes rotateplane {
+			0% {
+				transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+				-webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg) 
+			} 50% {
+				transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
+				-webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg) 
+			} 100% {
+				transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+				-webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+			}
+		}
+	</style>
+	<div class="loader">
+		<div class="loader-spinner">
+		</div>
+	</div>';
 
 	$attachment_type = esc_attr($a['type']);
 
@@ -65,6 +118,8 @@ function frontend_file_upload( $atts ) {
 			'pdf'  =>  'application/pdf'
 		);
 	}
+
+	$allowed_file_types_flattened = implode('", "', $allowed_file_types);
 
 	// Check that the nonce is valid, and the user can edit this post. Then upload the file.
 	if ( isset( $_POST['file_upload_nonce'], $_POST['post_id'] ) && wp_verify_nonce( $_POST['file_upload_nonce'], 'file_upload' ) && current_user_can( 'read' ) ) {
@@ -137,11 +192,30 @@ function frontend_file_upload( $atts ) {
 
 	$content .= '<script>
 	jQuery(document).ready( function($) {
-		$( "form[name=file_upload_form]" ).submit(function() {
-			$( "input[type=submit]" ).addClass( "uploading" );
-		});
+
 		$( "#message" ).delay(8000).fadeOut( "slow" );
+
+		$( "#file-upload" ).change( function() {
+
+			var f = this.files[0];
+			var fileExtension = ["' . $allowed_file_types_flattened . '"];
+			//console.log(f);
+
+			if ( f.size > 52428800 ) {
+				var sizeInMB = ( f.size / (1024*1024) ).toFixed(2);
+				alert( "' . __( 'The file you are trying to upload is too large.', 'ffu' ) . ' (" + sizeInMB +  " MB)" );
+				$(this).val(null);
+			} else if ( $.inArray( f.type, fileExtension) == -1 ) {
+				alert( "' . __( 'This filetype is not allowed.', 'ffu' ) . '" );
+				$(this).val(null);
+			} else {
+				$( "form[name=file_upload_form]" ).submit();
+				$( "html" ).addClass( "loading" );
+			}
+
+		});
 	});
+
 	</script>
 	<p>';
 
@@ -178,7 +252,7 @@ function frontend_file_upload( $atts ) {
 
 	$content .= '<form name="file_upload_form" id="file-upload-form" class="file-upload-form ' . $attachment_type . '" method="post" action="" enctype="multipart/form-data">';
 
-	do_action( 'ffu_form_start', $attachment_type );
+	do_action( 'ffu_form_start', $attachment_id, $attachment_type );
 
 	$content .= '<p>
 			<label for="file-upload">';
@@ -191,9 +265,9 @@ function frontend_file_upload( $atts ) {
 					}
 				}
 			$content .= '</label>
-			<input type="file" name="file_upload" id="file-upload" /><br />
+			<input type="file" name="file_upload" id="file-upload" required /><br />
+			<small>' . __( 'Allowed filetypes', 'ffu' ) . ': ' . $attachment_filetype . '</small>
 		</p>
-		<input type="submit" name="submit" id="submit" value="' . __( 'Save', 'ffu' ) . '" class="button-medium" />
 		<input type="hidden" name="post_id" value="' . get_the_ID() . '" />' . wp_nonce_field( 'file_upload', 'file_upload_nonce', false );
 
 		do_action( 'ffu_form_end', $attachment_type );

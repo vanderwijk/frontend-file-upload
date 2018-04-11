@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Frontend File Upload\n"
-"POT-Creation-Date: 2018-01-24 15:24+0100\n"
-"PO-Revision-Date: 2018-01-24 15:24+0100\n"
+"POT-Creation-Date: 2018-04-11 15:12+0200\n"
+"PO-Revision-Date: 2018-04-11 15:12+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -21,27 +21,35 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.js\n"
 
-#: frontend-file-upload.php:125
+#: frontend-file-upload.php:178
 msgid "Your file has been updated"
 msgstr "Uw bestand is bijgewerkt"
 
-#: frontend-file-upload.php:134
+#: frontend-file-upload.php:187
 msgid "Your file has been removed"
 msgstr "Uw bestand is verwijderd"
 
-#: frontend-file-upload.php:190
+#: frontend-file-upload.php:206
+msgid "The file you are trying to upload is too large."
+msgstr "Het bestand dat u probeert te uploaden is te groot."
+
+#: frontend-file-upload.php:209
+msgid "This filetype is not allowed."
+msgstr "Dit bestandstype is niet toegestaan."
+
+#: frontend-file-upload.php:262
 msgid "Change file"
 msgstr "Bestand wijzigen"
 
-#: frontend-file-upload.php:192
+#: frontend-file-upload.php:264
 msgid "Upload file"
 msgstr "Bestand uploaden"
 
-#: frontend-file-upload.php:198
-msgid "Save"
-msgstr "Opslaan"
+#: frontend-file-upload.php:269
+msgid "Allowed filetypes"
+msgstr "Toegestane bestandsformaten"
 
-#: frontend-file-upload.php:208
+#: frontend-file-upload.php:280
 msgid "Delete file"
 msgstr "Bestand verwijderen"
 
@@ -60,6 +68,9 @@ msgstr "Johan van der Wijk"
 #. Author URI of the plugin/theme
 msgid "https://thewebworks.nl"
 msgstr "http://thewebworks.nl"
+
+#~ msgid "Save"
+#~ msgstr "Opslaan"
 
 #~ msgid "Upload"
 #~ msgstr "Uploaden"
